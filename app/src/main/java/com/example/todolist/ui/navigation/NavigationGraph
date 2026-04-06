@@ -1,0 +1,38 @@
+package com.example.todolist.ui.navigation // Vérifie que c'est bien ton package
+
+import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel // TRÈS IMPORTANT pour TaskViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.todolist.viewmodel.TaskViewModel // Ton ViewModel
+import com.example.todolist.HomeScreen // Tes écrans
+import com.example.todolist.TaskScreen
+import com.example.todolist.TaskDetailScreen
+import androidx.lifecycle.viewmodel.compose.viewModel // TRÈS IMPORTANT
+
+@Composable
+fun NavigationGraph() {
+    val navController = rememberNavController()
+    // On initialise le viewModel ici
+    val viewModel: TaskViewModel = viewModel()
+
+    NavHost(
+        navController = navController,
+        startDestination = "welcome" // Vérifie bien les minuscules
+    ) {
+        composable(route = "welcome") {
+            HomeScreen(navController)
+        }
+
+        composable(route = "home") {
+            // On passe bien le viewModel
+            TaskScreen(navController, viewModel)
+        }
+
+        composable(route = "task_detail/{taskId}") { backStackEntry ->
+            val taskId = backStackEntry.arguments?.getString("taskId")?.toIntOrNull()
+            taskId?.let { TaskDetailScreen(navController, it, viewModel) }
+        }
+    }
+}

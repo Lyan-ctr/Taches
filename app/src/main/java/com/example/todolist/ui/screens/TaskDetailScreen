@@ -1,0 +1,20 @@
+@Composable
+fun TaskDetailScreen(navController: NavController, taskId: Int,
+                     viewModel: TaskViewModel = viewModel()) {
+
+    Scaffold(
+        topBar = {
+            TopAppBar(title = { Text(text = "Détail de la tâche") })
+        }
+    ) {
+        padding ->
+        Column (modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp)) {
+            Text( text = "Vous avez sélectionner la tâche : ${taskId}",
+                style = MaterialTheme.typography.headlineMedium)
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { navController.popBackStack() }) {
+                Text( text = "Retour")
+            }
+        }
+    }
+}

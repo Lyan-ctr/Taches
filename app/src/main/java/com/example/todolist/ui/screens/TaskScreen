@@ -1,0 +1,95 @@
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+
+@Composable
+fun TaskScreen(navController: NavController) {
+    // 1. Définir la liste des pays. Les noms ici doivent
+    // correspondre au "when" plus bas pour l'image.
+    val paysListe = listOf("Sénégal", "Congo", "Belgique", "Canada", "France")
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White) // Fond blanc pour l'écran
+            .padding(16.dp)
+    ) {
+        // Titre de l'écran
+        Text(
+            text = "📍 M'bokas",
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.ExtraBold,
+            color = Color.Black,
+            modifier = Modifier.padding(bottom = 20.dp)
+        )
+
+        // Liste déroulante
+        LazyColumn {
+            items(paysListe) { pays ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // --- 2. AFFICHAGE DU DRAPEAU ---
+                    // C'est ici qu'on fait le lien entre le nom et le fichier image
+                    val imageRes = when (pays) {
+                        "Belgique" -> R.drawable.belgique // Remplacer par R.drawable.belgique
+                        "Canada" -> R.drawable.canada // Remplacer par R.drawable.canada
+                        "France" -> R.drawable.france // Remplacer par R.drawable.france
+                        "Congo" -> R.drawable.congo   // Remplacer par R.drawable.congo (RDC)
+                        "Sénégal" -> R.drawable.senegal // Remplacer par R.drawable.senegal
+                        else -> R.drawable.ic_launcher_background // Image par défaut
+                    }
+
+                    Image(
+                        painter = painterResource(id = imageRes),
+                        contentDescription = "Drapeau de $pays",
+                        modifier = Modifier
+                            .size(55.dp) // Taille de l'icône
+                            .clip(CircleShape), // Découpe en rond
+                        contentScale = ContentScale.Crop // Remplit bien le cercle
+                    )
+
+                    // Nom du pays
+                    Text(
+                        text = pays,
+                        modifier = Modifier
+                            .padding(start = 20.dp)
+                            .weight(1f),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+
+                    // Icône d'indication (petite flèche)
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowDown,
+                        contentDescription = null,
+                        tint = Color.Gray
+                    )
+                }
+
+                // Ligne de séparation
+                HorizontalDivider(color = Color.LightGray, thickness = 0.5.dp)
+            }
+        }
+    }
+}
