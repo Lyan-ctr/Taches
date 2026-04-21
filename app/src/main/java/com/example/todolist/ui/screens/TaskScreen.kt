@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.todolist.model.Task
@@ -20,23 +21,43 @@ import com.example.todolist.ui.components.AddTaskDialog
 
 @Composable
 fun TaskItem(task: Task, onToggle: () -> Unit, onClick: () -> Unit) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(8.dp)) {
-        Checkbox(checked = task.isDone, onCheckedChange = { onToggle() })
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 8.dp)
-                .align(Alignment.CenterVertically)
-                .clickable { onClick() }
+    // Changement de couleur selon l'état
+    val cardColor = if (task.isDone) Color(0xFFE8F5E9) else Color.White
+    val textColor = if (task.isDone) Color.Gray else Color.Black
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .clickable { onClick() }, // Le clic sur la carte ouvre le détail
+        colors = CardDefaults.cardColors(containerColor = cardColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = task.name, style = MaterialTheme.typography.bodyLarge)
-            Text(
-                text = "Début : ${task.dateDebut} - Fin : ${task.dateFin}",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
+            Checkbox(
+                checked = task.isDone,
+                onCheckedChange = { onToggle() }
             )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp)
+            ) {
+                Text(
+                    text = task.name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = textColor
+                )
+                Text(
+                    text = "Fin : ${task.dateFin}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+            }
         }
     }
 }
@@ -65,12 +86,18 @@ fun TaskScreen(navController: NavController, viewModel: TaskViewModel) {
                     Text("Aucune tâche. Cliquez sur + pour en ajouter une !")
                 }
             } else {
-                LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp)
+                ) {
                     items(tasks) { task ->
                         TaskItem(
                             task = task,
                             onToggle = { viewModel.updateTask(task.copy(isDone = !task.isDone)) },
-                            onClick = { navController.navigate("task_detail/${task.id}") }
+                            onClick = { 
+                                // On passe l'ID pour le TP
+                                navController.navigate("task_detail/${task.id}") 
+                            }
                         )
                     }
                 }
